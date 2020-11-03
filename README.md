@@ -30,3 +30,7 @@ Varje order ska ha
 * vilken _status_ ordern har (recieved, canceled, shipped, delivered)
 
 Adminsidan för ordersystemet ska lista de 10 senaste ordrarna och admin ska kunna ändra order status.
+
+### Pluginidé
+Custom post types med olika spel som användare kan ratea. 
+Widgeten ska visa de spel som är högst rankade. 
