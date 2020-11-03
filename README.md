@@ -5,6 +5,9 @@ Ni ska bygga en wordpress plugin som sammanflätar alla koncept genom kursen.
 Det finns två alternativ vid val av plugin att utveckla, 
 antingen utvecklar ni enligt exempelet nedan, eller så väljer ni att fullfölja en egen idé.
 
+En i gruppen forkar detta repo, och lägger till den andra som collaborator.
+Klona sedan ner det till er plugin-mapp.
+
 ## G-Krav
 * Filters och Hooks
 * Custom Post Type
