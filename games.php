@@ -4,6 +4,8 @@
 
 // Create Game Post
 
+include( plugin_dir_path( __FILE__ ) . 'rating_widget.php');
+
 function create_cpt_game() {
     $plugin_url = plugin_dir_url(__FILE__);
 
@@ -95,25 +97,6 @@ function add_rating($content){
     }
     return $content;
 }
-function check_input() {
-    global $wpdb; 
-    $rated = $_POST['rate'];
-    $unrated = $_POST['unrate'];
-        if(isset($_POST['rate'])) {
-            $user_id = wp_get_current_user(); 
-            $post_id = $_POST['issubmit'];
-            
-            $wpdb->get_results( "INSERT INTO wp_ratings (owner_id, post_id, rating_value) VALUES ($user_id->ID, $post_id, $rated)"); 
-                
-        }
-        if(isset($unrated)) {
-            $user_id = wp_get_current_user(); 
-            $post_id = $_POST['unrate'];
-
-            $wpdb->get_results( "DELETE FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $post_id)");
-        }
-
-}
 function remove_rating($content) {
     global $wpdb;
         
@@ -136,7 +119,26 @@ function remove_rating($content) {
     }
     return $content; 
 }
+function check_input() {
+    global $wpdb; 
+    
+    // $unrated = $_POST['unrate'];
+        if(isset($_POST['rate'])) {
+            $user_id = wp_get_current_user(); 
+            $post_id = $_POST['issubmit'];
+            $rated = $_POST['rate'];
+            
+            $wpdb->get_results( "INSERT INTO wp_ratings (owner_id, post_id, rating_value) VALUES ($user_id->ID, $post_id, $rated)"); 
+                
+        }
+        if(isset($_POST['unrate'])) {
+            $user_id = wp_get_current_user(); 
+            $post_id = $_POST['unrate'];
 
+            $wpdb->get_results( "DELETE FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $post_id)");
+        }
+
+}
 add_action('init', 'create_cpt_game');
 add_action('init', 'check_input');
 
