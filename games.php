@@ -4,6 +4,8 @@
 
 // Create Game Post
 
+include( plugin_dir_path( __FILE__ ) . 'rating_widget.php');
+
 function create_cpt_game() {
     $plugin_url = plugin_dir_url(__FILE__);
 
@@ -95,15 +97,45 @@ function add_rating($content){
     }
     return $content;
 }
+function remove_rating($content) {
+    global $wpdb;
+        
+        if (is_singular() && in_the_loop() && is_main_query() ) {
+
+            $id = get_the_ID(); 
+            $user_id = wp_get_current_user(); 
+
+            $wpdb->get_results( "SELECT owner_id, post_id FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $id)" ); 
+                if($wpdb->num_rows > 0) {
+                    return $content . 
+                    "
+                    <form method=POST>
+                    <button style='background-color: #000';> Unrate </button>
+                    <input type=hidden name=unrate value=$id></input>
+                    </form>"; 
+                }    
+        
+        
+    }
+    return $content; 
+}
 function check_input() {
     global $wpdb; 
-    $rated = $_POST['rate'];
-        if(isset($rated)) {
+    
+    // $unrated = $_POST['unrate'];
+        if(isset($_POST['rate'])) {
             $user_id = wp_get_current_user(); 
             $post_id = $_POST['issubmit'];
+            $rated = $_POST['rate'];
             
             $wpdb->get_results( "INSERT INTO wp_ratings (owner_id, post_id, rating_value) VALUES ($user_id->ID, $post_id, $rated)"); 
                 
+        }
+        if(isset($_POST['unrate'])) {
+            $user_id = wp_get_current_user(); 
+            $post_id = $_POST['unrate'];
+
+            $wpdb->get_results( "DELETE FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $post_id)");
         }
 
 }
@@ -112,6 +144,7 @@ add_action('init', 'create_cpt_game');
 add_action('init', 'check_input');
 
 add_filter('the_content', 'add_rating'); 
+add_filter('the_content', 'remove_rating');
 
 register_activation_hook(__FILE__, 'create_rating');
 register_deactivation_hook(__FILE__, 'ratings_uninstall'); 
