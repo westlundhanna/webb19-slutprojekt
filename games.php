@@ -122,7 +122,6 @@ function remove_rating($content) {
 function check_input() {
     global $wpdb; 
     
-    // $unrated = $_POST['unrate'];
         if(isset($_POST['rate'])) {
             $user_id = wp_get_current_user(); 
             $post_id = $_POST['issubmit'];
