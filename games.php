@@ -1,10 +1,15 @@
 <?php
 
-/* Plugin Name: Game rating */ 
+/* 
+Plugin Name: Game rating
+Authors: Joakim Hedlund & Hanna Westlund
+*/ 
 
-// Create Game Post
+
 
 include( plugin_dir_path( __FILE__ ) . 'rating_widget.php');
+include( plugin_dir_path( __FILE__ ) . 'plugin_options.php');
+
 
 function create_cpt_game() {
     $plugin_url = plugin_dir_url(__FILE__);
@@ -62,7 +67,7 @@ function add_rating($content){
         $id = get_the_ID();
         $user_id = wp_get_current_user();
 
-        $results = $wpdb->get_results( "SELECT * FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $id)" );
+        $wpdb->get_results( "SELECT * FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $id)" );
         if($wpdb->num_rows == 0){
             return $content .
 
@@ -79,20 +84,9 @@ function add_rating($content){
             <label for=rate4> 4 </label><br>
             <input type=checkbox id=rate5 name=rate value=5>
             <label for=rate5> 5 </label><br>
-            <input type=submit name=submit></input>
-            <input type=hidden name=issubmit value=$id></input>
+            <input type=submit name=submit style=background-color:" . get_option('mt_button_color') . ">
+            <input type=hidden name=issubmit value=$id>
             </form>";
-            // "
-            // <form method=POST>
-            // <button>&#11088</button>
-            // <button>&#11088</button>
-            // <button>&#11088</button>
-            // <button>&#11088</button>
-            // <button>&#11088</button>
-
-            // <input type=hidden name=issubmit value=$id></input>
-            // </form>
-            // ";
         }
     }
     return $content;
@@ -110,7 +104,7 @@ function remove_rating($content) {
                     return $content . 
                     "
                     <form method=POST>
-                    <button style='background-color: #000';> Unrate </button>
+                    <button style=background-color:" . get_option('mt_button_unrate_color') . "> Unrate </button>
                     <input type=hidden name=unrate value=$id></input>
                     </form>"; 
                 }    
