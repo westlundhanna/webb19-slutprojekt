@@ -8,13 +8,14 @@ Authors: Joakim Hedlund & Hanna Westlund
 
 
 include( plugin_dir_path( __FILE__ ) . 'rating_widget.php');
-include( plugin_dir_path( __FILE__ ) . 'plugin_options.php');
+include( plugin_dir_path( __FILE__ ) . 'admin.php');
 
 
 function create_cpt_game() {
     $plugin_url = plugin_dir_url(__FILE__);
 
-    wp_enqueue_style('style', $plugin_url . "/assets/style.css");
+    wp_enqueue_style('style', $plugin_url . "/includes/style.css");
+    wp_enqueue_script('script', $plugin_url . "/includes/script.js");
 
     register_post_type( 'cpt_game',
     
@@ -61,7 +62,7 @@ function create_rating() {
         dbDelta($sql);
 }
 
-function add_rating($content){
+function handling_ratings($content){
     global $wpdb;
     if( is_singular() && in_the_loop() && is_main_query() ){
         $id = get_the_ID();
@@ -74,45 +75,58 @@ function add_rating($content){
             "
             <h2>Rate this game</h2>
             <form method=POST>
-            <input type=checkbox id=rate1 name=rate value=1>
+            <input type=checkbox id=rate1 onclick=onlyOne(this) name=rate value=1>
             <label for=rate1> 1 </label><br>
-            <input type=checkbox id=rate2 name=rate value=2>
+            <input type=checkbox id=rate2 onclick=onlyOne(this) name=rate value=2>
             <label for=rate2> 2 </label><br>
-            <input type=checkbox id=rate3 name=rate value=3>
+            <input type=checkbox id=rate3 onclick=onlyOne(this) name=rate value=3>
             <label for=rate3> 3 </label><br>
-            <input type=checkbox id=rate4 name=rate value=4>
+            <input type=checkbox id=rate4 onclick=onlyOne(this) name=rate value=4>
             <label for=rate4> 4 </label><br>
-            <input type=checkbox id=rate5 name=rate value=5>
+            <input type=checkbox id=rate5 onclick=onlyOne(this) name=rate value=5>
             <label for=rate5> 5 </label><br>
             <input type=submit name=submit style=background-color:" . get_option('mt_button_color') . ">
             <input type=hidden name=issubmit value=$id>
             </form>";
+        }else{
+            return $content . 
+            "
+            <form method=POST>
+            <button style=background-color:" . get_option('mt_button_unrate_color') . "> Unrate </button>
+            <input type=hidden name=unrate value=$id></input>
+            </form>"; 
         }
     }
     return $content;
 }
-function remove_rating($content) {
+
+function write_rating($content){
     global $wpdb;
+    $id = get_the_ID();
+    
+    if( in_the_loop() && is_main_query() ){
+        $rating_stars = $wpdb->get_results( 
         
-        if (is_singular() && in_the_loop() && is_main_query() ) {
+        "SELECT post_id, AVG (rating_value) AS average_rating 
+            FROM wp_ratings WHERE wp_ratings.post_id = $id GROUP BY post_id" );
 
-            $id = get_the_ID(); 
-            $user_id = wp_get_current_user(); 
-
-            $wpdb->get_results( "SELECT owner_id, post_id FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $id)" ); 
-                if($wpdb->num_rows > 0) {
-                    return $content . 
-                    "
-                    <form method=POST>
-                    <button style=background-color:" . get_option('mt_button_unrate_color') . "> Unrate </button>
-                    <input type=hidden name=unrate value=$id></input>
-                    </form>"; 
-                }    
+        foreach($rating_stars as $rating_star) {
+            $stars = $rating_star->average_rating; 
+            $loops = 0;
+            $star_symbol = '<span>&#11088</span>';
+            
+            while($loops < $stars) {
+                echo $star_symbol;
+                $loops++;
+            }
+        }
         
+
+    return $content; 
         
     }
-    return $content; 
 }
+
 function check_input() {
     global $wpdb; 
     
@@ -135,8 +149,9 @@ function check_input() {
 add_action('init', 'create_cpt_game');
 add_action('init', 'check_input');
 
-add_filter('the_content', 'add_rating'); 
-add_filter('the_content', 'remove_rating');
+add_filter('the_content', 'handling_ratings'); 
+add_filter('the_content', 'write_rating');
+
 
 register_activation_hook(__FILE__, 'create_rating');
 register_deactivation_hook(__FILE__, 'ratings_uninstall'); 
