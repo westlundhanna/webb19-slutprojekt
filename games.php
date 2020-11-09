@@ -7,7 +7,7 @@ Authors: Joakim Hedlund & Hanna Westlund
 
 
 
-include( plugin_dir_path( __FILE__ ) . 'rating_widget.php');
+include( plugin_dir_path( __FILE__ ) . 'rating_widget.php'); // Ska in i incudes-mapp
 include( plugin_dir_path( __FILE__ ) . 'admin.php');
 
 
