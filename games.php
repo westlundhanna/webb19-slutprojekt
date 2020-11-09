@@ -7,15 +7,19 @@ Authors: Joakim Hedlund & Hanna Westlund
 
 
 
-include( plugin_dir_path( __FILE__ ) . 'rating_widget.php'); // Ska in i incudes-mapp
-include( plugin_dir_path( __FILE__ ) . 'admin.php');
+if(!defined('ABSPATH')){
+    exit;
+}
+
+require_once( plugin_dir_path( __FILE__ ) . 'includes/rating_widget.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/admin.php');
 
 
 function create_cpt_game() {
     $plugin_url = plugin_dir_url(__FILE__);
 
-    wp_enqueue_style('style', $plugin_url . "/includes/style.css");
-    wp_enqueue_script('script', $plugin_url . "/includes/script.js");
+    wp_enqueue_style('style', $plugin_url . "public/style.css");
+    wp_enqueue_script('script', $plugin_url . "public/script.js");
 
     register_post_type( 'cpt_game',
     
@@ -85,14 +89,14 @@ function handling_ratings($content){
             <label for=rate4> 4 </label><br>
             <input type=checkbox id=rate5 onclick=onlyOne(this) name=rate value=5>
             <label for=rate5> 5 </label><br>
-            <input type=submit name=submit style=background-color:" . get_option('mt_button_color') . ">
+            <button id=rate_color name=submit class=" . get_option('rate_color') . "> Rate </button>
             <input type=hidden name=issubmit value=$id>
             </form>";
         }else{
             return $content . 
             "
             <form method=POST>
-            <button style=background-color:" . get_option('mt_button_unrate_color') . "> Unrate </button>
+            <button id=unrate_color class=" . get_option('unrate_color') . "> Unrate </button>
             <input type=hidden name=unrate value=$id></input>
             </form>"; 
         }
@@ -108,20 +112,22 @@ function write_rating($content){
         $rating_stars = $wpdb->get_results( 
         
         "SELECT post_id, AVG (rating_value) AS average_rating 
-            FROM wp_ratings WHERE wp_ratings.post_id = $id GROUP BY post_id" );
-
+            FROM wp_ratings WHERE wp_ratings.post_id = $id GROUP BY post_id" ); ?>
+        <div class="span_container">
+        <?php
         foreach($rating_stars as $rating_star) {
             $stars = $rating_star->average_rating; 
             $loops = 0;
-            $star_symbol = '<span>&#11088</span>';
+            $star_symbol = '<span>' . get_option('symbol') . '</span>';
             
             while($loops < $stars) {
                 echo $star_symbol;
                 $loops++;
             }
         }
-        
-
+        ?>
+        </div>
+    <?php
     return $content; 
         
     }
