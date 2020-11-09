@@ -7,15 +7,15 @@ Authors: Joakim Hedlund & Hanna Westlund
 
 
 
-include( plugin_dir_path( __FILE__ ) . 'rating_widget.php');
-include( plugin_dir_path( __FILE__ ) . 'admin.php');
+include( plugin_dir_path( __FILE__ ) . '/includes/rating_widget.php');
+include( plugin_dir_path( __FILE__ ) . '/includes/admin.php');
 
 
 function create_cpt_game() {
     $plugin_url = plugin_dir_url(__FILE__);
 
-    wp_enqueue_style('style', $plugin_url . "/includes/style.css");
-    wp_enqueue_script('script', $plugin_url . "/includes/script.js");
+    wp_enqueue_style('style', $plugin_url . "/public/style.css");
+    wp_enqueue_script('script', $plugin_url . "/public/script.js");
 
     register_post_type( 'cpt_game',
     
@@ -113,7 +113,7 @@ function write_rating($content){
         foreach($rating_stars as $rating_star) {
             $stars = $rating_star->average_rating; 
             $loops = 0;
-            $star_symbol = '<span>&#11088</span>';
+            $star_symbol = '<span>' . get_option('symbol') . '</span>';
             
             while($loops < $stars) {
                 echo $star_symbol;

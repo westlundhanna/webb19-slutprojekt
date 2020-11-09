@@ -29,7 +29,9 @@ class rating_widget extends WP_Widget{
             ORDER BY total_ratings DESC');
 
         echo '<h3>Best rated games</h3>';
-
+        
+        echo "<h4>Top " . $instance['amount'] . " games</h4>";
+        
         $best_rated = array();
 
 
@@ -38,7 +40,7 @@ class rating_widget extends WP_Widget{
         }
 
         if(!empty($instance['amount'])){
-            for($i = 0; $i < $instance['amount']; $i++){
+            for($i = 0; $i < $instance['amount']; $i++){ // if som begränsar så att amount inte kan vara högre än 10.
                 echo "<p>$best_rated[$i]</p>";
             }
         }
@@ -47,15 +49,7 @@ class rating_widget extends WP_Widget{
 
 
     function form($instance){
-        // printf('
-        // <label for=amount>Display how many games you want to show</label>
-        // <select id=amount value=' . $instance['amount'] . '>
-        // <option value=1>1</option>
-        // <option value=2>2</option>
-        // <option value=3>3</option>
-        // </select>');
-        // $this->get_field_name("amount");
-        printf('<input type="number" name="%s" value="' . $instance['amount'] . '">',
+        printf('<input type="number" name="%s" value="' . $instance['amount'] . '" max=10>',
         $this->get_field_name("amount")
     );
     }
