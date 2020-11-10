@@ -112,9 +112,23 @@ function write_rating($content){
         $rating_stars = $wpdb->get_results( 
         
         "SELECT post_id, AVG (rating_value) AS average_rating 
-            FROM wp_ratings WHERE wp_ratings.post_id = $id GROUP BY post_id" ); ?>
+            FROM wp_ratings WHERE wp_ratings.post_id = $id GROUP BY post_id" ); 
+        
+        $ratings_by_user = $wpdb->get_results(
+            "SELECT post_id, owner_id, COUNT(owner_id) AS total_users 
+            FROM wp_ratings WHERE wp_ratings.post_id = $id
+            GROUP BY post_id"    
+            
+        );
+        
+        ?>
         <div class="span_container">
         <?php
+        foreach($ratings_by_user as $rating_by_user) {
+            $users_total = $rating_by_user->total_users;
+            
+        }
+        
         foreach($rating_stars as $rating_star) {
             $stars = $rating_star->average_rating; 
             $loops = 0;
@@ -125,9 +139,12 @@ function write_rating($content){
                 $loops++;
             }
         }
+        echo " <br> ";
+        echo $users_total . " users rated this game";
         ?>
         </div>
     <?php
+    
     return $content; 
         
     }
