@@ -21,29 +21,31 @@ class rating_widget extends WP_Widget{
         global $post;
 
         $results = $wpdb->get_results(
-            'SELECT wp_ratings.post_id, wp_posts.post_title, 
+            "SELECT wp_ratings.post_id, wp_posts.post_title,
             SUM(rating_value) AS total_ratings 
             FROM wp_ratings 
             INNER JOIN wp_posts 
             ON wp_posts.ID = wp_ratings.post_id 
             GROUP BY wp_ratings.post_id
-            ORDER BY total_ratings DESC');
+            ORDER BY total_ratings DESC
+            LIMIT " . $instance['amount']);
 
         echo '<h3>Best rated games</h3>';
         
         echo "<h4>Top " . $instance['amount'] . " games</h4>";
-        
-        $best_rated = array();
-
-
-        foreach($results as $result){
-            array_push($best_rated, $result->post_title);
-        }
+     
 
         if(!empty($instance['amount'])){
-            for($i = 0; $i < $instance['amount']; $i++){ 
+           
+                foreach($results as $result){ 
                 echo "<ul>";
-                echo "<li>$best_rated[$i]</li>";
+                echo "<li>";
+                ?>
+                <a href="<?php echo get_permalink($result->post_id) ?>">
+                <?php echo $result->post_title ?>
+                </a>
+                <?php
+                echo "</li>";
                 echo "</ul>";
             }
         }
