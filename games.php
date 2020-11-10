@@ -127,6 +127,7 @@ function write_rating($content){
         foreach($ratings_by_user as $rating_by_user) {
             $users_total = $rating_by_user->total_users;
             
+            
         }
         
         foreach($rating_stars as $rating_star) {
@@ -138,9 +139,10 @@ function write_rating($content){
                 echo $star_symbol;
                 $loops++;
             }
+            echo " <br> ";
+            echo $users_total . " users rated this game";
         }
-        echo " <br> ";
-        echo $users_total . " users rated this game";
+        
         ?>
         </div>
     <?php
@@ -157,15 +159,15 @@ function check_input() {
             $user_id = wp_get_current_user(); 
             $post_id = $_POST['issubmit'];
             $rated = $_POST['rate'];
-            
-            $wpdb->get_results( "INSERT INTO wp_ratings (owner_id, post_id, rating_value) VALUES ($user_id->ID, $post_id, $rated)"); 
+            $query = $wpdb->prepare("INSERT INTO wp_ratings (owner_id, post_id, rating_value) VALUES (%s, %s, %s)", $user_id->ID, $post_id, $rated);
+            $wpdb->get_results($query); 
                 
         }
         if(isset($_POST['unrate'])) {
             $user_id = wp_get_current_user(); 
             $post_id = $_POST['unrate'];
-
-            $wpdb->get_results( "DELETE FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $post_id)");
+            $query = $wpdb->prepare("DELETE FROM wp_ratings WHERE (owner_id = %s AND post_id = %s)", $user_id->ID, $post_id);
+            $wpdb->get_results($query);
         }
 
 }
@@ -174,7 +176,6 @@ add_action('init', 'check_input');
 
 add_filter('the_content', 'handling_ratings'); 
 add_filter('the_content', 'write_rating');
-
 
 register_activation_hook(__FILE__, 'create_rating');
 register_deactivation_hook(__FILE__, 'ratings_uninstall'); 

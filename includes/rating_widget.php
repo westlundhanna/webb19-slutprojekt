@@ -52,7 +52,7 @@ class rating_widget extends WP_Widget{
         echo $args['after_widget'];
     }
 
-
+    
     function form($instance){
         printf('<input type="number" name="%s" value="' . $instance['amount'] . '" max=10>',
         $this->get_field_name("amount")

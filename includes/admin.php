@@ -6,10 +6,6 @@ function my_plugin_menu() {
 	add_menu_page( 'My Plugin Options', 'Games Rating Options', 'manage_options', 'my-unique-identifier', 'mt_settings_page' );
 }
 
-
-
-
-
 function mt_settings_page() {
 
     if (!current_user_can('manage_options'))
@@ -17,22 +13,9 @@ function mt_settings_page() {
       wp_die( __('You do not have sufficient permissions to access this page.') );
     }
 
-    // $opt_color_rate = 'mt_button_color';
-    // $opt_color_unrate = 'mt_button_unrate_color';
-
-    
-    // $data_field_name_symbol = 'mt_symbol';
     $hidden_field_name = 'mt_submit_hidden';
-    // $button_rate = 'mt_button_color'; 
-    // $button_unrate = 'mt_button_unrate_color';
-
-    // $opt_val_rate = get_option( $opt_color_rate);
-    // $opt_val_unrate = get_option( $opt_color_unrate );
 
     if( isset($_POST[ $hidden_field_name ]) && $_POST[ $hidden_field_name ] == 'Y' ) {
-
-        // $opt_val_rate = $_POST[ $button_rate ];
-        // $opt_val_unrate = $_POST[ $button_unrate ];
         
         if($_POST['symbol'] == 1) {
           update_option( 'symbol', '&#11088' );
@@ -47,8 +30,6 @@ function mt_settings_page() {
         }else{
           update_option( 'symbol', '&#128153' );
         }
-        // update_option( $opt_color_rate, $opt_val_rate );
-        // update_option( $opt_color_unrate, $opt_val_unrate );
 
         if($_POST['unrate_color'] == 3) {
           update_option('unrate_color', 'green');
@@ -66,8 +47,6 @@ function mt_settings_page() {
           update_option('rate_color', 'pink');
         }
         
-
-
 
 ?>
     <div class="updated"><p><strong><?php _e('Settings saved.', 'menu-test' ); ?></strong></p></div>
