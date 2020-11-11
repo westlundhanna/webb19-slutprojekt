@@ -33,4 +33,5 @@ Adminsidan för ordersystemet ska lista de 10 senaste ordrarna och admin ska kun
 
 ### Pluginidé
 Custom post types med olika spel som användare kan ratea. 
-Widgeten ska visa de spel som är högst rankade. 
+Widgeten ska visa de spel som är högst rankade. Man kan välja upp till 10 spel. 
+Adminsidan innehåller val för att ändra rating symboler som skrivs ut samt färgen på rate/unrate knappar.

@@ -1,5 +1,11 @@
 <?php
 
+echo 'Big no no';
+
+if(!defined('ABSPATH')){
+  exit;
+}
+
 
 class rating_widget extends WP_Widget{
 
@@ -18,7 +24,6 @@ class rating_widget extends WP_Widget{
     function widget($args, $instance) {
         echo $args['before_widget'];
         global $wpdb;
-        global $post;
 
         $results = $wpdb->get_results(
             "SELECT wp_ratings.post_id, wp_posts.post_title,
@@ -36,9 +41,8 @@ class rating_widget extends WP_Widget{
      
 
         if(!empty($instance['amount'])){
-           
-                foreach($results as $result){ 
-                echo "<ul>";
+            echo "<ul>";
+            foreach($results as $result){ 
                 echo "<li>";
                 ?>
                 <a href="<?php echo get_permalink($result->post_id) ?>">
@@ -46,17 +50,17 @@ class rating_widget extends WP_Widget{
                 </a>
                 <?php
                 echo "</li>";
-                echo "</ul>";
             }
+            echo "</ul>";
         }
         echo $args['after_widget'];
     }
 
     
     function form($instance){
-        printf('<input type="number" name="%s" value="' . $instance['amount'] . '" max=10>',
-        $this->get_field_name("amount")
-    );
+        printf('<input type="number" name="%s" value="%s" max=10>', 
+            $this->get_field_name("amount"), $instance['amount']
+        );
     }
 
 }

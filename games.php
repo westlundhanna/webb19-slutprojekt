@@ -2,6 +2,7 @@
 
 /* 
 Plugin Name: Game rating
+Plugin Description: Plugin to create posts for games that can be rated by users. The plugin contains a widget that displays the best rated games.
 Authors: Joakim Hedlund & Hanna Westlund
 */ 
 
@@ -72,7 +73,8 @@ function handling_ratings($content){
         $id = get_the_ID();
         $user_id = wp_get_current_user();
 
-        $wpdb->get_results( "SELECT * FROM wp_ratings WHERE (owner_id = $user_id->ID AND post_id = $id)" );
+        $query = $wpdb->prepare( "SELECT * FROM wp_ratings WHERE (owner_id = %s AND post_id = %s)", $user_id->ID, $id );
+        $wpdb->get_results($query);
         if($wpdb->num_rows == 0){
             return $content .
 
